@@ -1,0 +1,13 @@
+[
+  {
+    "id": "0sz39bv7qmrc4914v",
+    "createdAt": "2026-07-08T13:31:07.135Z",
+    "updatedAt": "2026-07-08T13:31:07.135Z",
+    "userId": "1khj5qwsvmrc3u8rr",
+    "title": "Books",
+    "amount": 50,
+    "type": "expense",
+    "category": "Books",
+    "date": "2026-07-08"
+  }
+]

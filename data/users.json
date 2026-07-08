@@ -1,0 +1,71 @@
+[
+  {
+    "id": "1khj5qwsvmrc3u8rr",
+    "createdAt": "2026-07-08T13:19:37.191Z",
+    "updatedAt": "2026-07-08T13:19:37.191Z",
+    "username": "johndoe",
+    "password": "$2b$10$4x1TAQmep7SBO9Yg13xhEuLm2IeKfNZPrqyaPhOMZjqm4GlsYyWsK",
+    "email": "johndoe@university.edu",
+    "role": "student",
+    "securityQuestion": "What is your pet's name?",
+    "securityAnswer": "fluffy",
+    "fullName": "John Doe",
+    "collegeName": "Antigravity Academy"
+  },
+  {
+    "id": "7luztx4z0mrc40j0p",
+    "createdAt": "2026-07-08T13:24:30.409Z",
+    "updatedAt": "2026-07-08T13:24:30.409Z",
+    "username": "Abdul@2005",
+    "password": "$2b$10$.BO72HoMxuYguX7K65m4Hewf8qxFrJnKigXaRL0eS/UarZrPo.Yqi",
+    "email": "lukkyabdul2005@gmail.com",
+    "role": "student",
+    "securityQuestion": "What is the name of your first school?",
+    "securityAnswer": "mpps",
+    "fullName": "PALEM ABDUL KHADAR",
+    "collegeName": "TAKSHASHILA UNIVERSITY"
+  },
+  {
+    "id": "wp0vd4pn4mrc4dzec",
+    "createdAt": "2026-07-08T13:34:58.164Z",
+    "updatedAt": "2026-07-08T13:34:58.164Z",
+    "username": "admin@123",
+    "password": "$2b$10$3ab32Rj7KcfpjVIRnZpFseZtaBMHVvf5hWHh42TDiSUYYZMLrtWGC",
+    "email": "admin@gmail.com",
+    "role": "admin",
+    "securityQuestion": "What is the name of your first school?",
+    "securityAnswer": "mpps",
+    "fullName": "PALEM ABDUL KHADAR",
+    "collegeName": "TAKSHASHILA UNIVERSITY"
+  },
+  {
+    "id": "j3g6oz5d8mrc7savk",
+    "createdAt": "2026-07-08T15:10:05.072Z",
+    "updatedAt": "2026-07-08T15:10:05.072Z",
+    "username": "profsmith",
+    "password": "$2b$10$sGcaow3/tQMU0.IQbxu3iO/PcW.yBBdp.pgpVowvMavxGYWUgme3a",
+    "email": "profsmith@university.edu",
+    "role": "faculty",
+    "securityQuestion": "What is your pet's name?",
+    "securityAnswer": "max",
+    "fullName": "Prof. Smith",
+    "collegeName": "Antigravity Academy",
+    "facultyId": "",
+    "isVerified": true
+  },
+  {
+    "id": "3ue248nkamrc82u9k",
+    "createdAt": "2026-07-08T15:18:16.760Z",
+    "updatedAt": "2026-07-08T15:28:09.231Z",
+    "username": "studenttest",
+    "password": "$2b$10$VKcqyk.Vsbx8IL0CkwobdeXMPD9Bgxwa5z6dfKfMGjjRK54wyM5cu",
+    "email": "studenttest@university.edu",
+    "role": "student",
+    "securityQuestion": "What is your pet's name?",
+    "securityAnswer": "buddy",
+    "fullName": "Test Student",
+    "collegeName": "Antigravity Academy",
+    "facultyId": "j3g6oz5d8mrc7savk",
+    "isVerified": true
+  }
+]

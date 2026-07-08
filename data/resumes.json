@@ -1,0 +1,24 @@
+[
+  {
+    "id": "oelvwq1himrc442c4",
+    "createdAt": "2026-07-08T13:27:15.412Z",
+    "updatedAt": "2026-07-08T13:27:15.412Z",
+    "userId": "1khj5qwsvmrc3u8rr",
+    "name": "John Doe",
+    "email": "johndoe@university.edu",
+    "phone": "",
+    "social": "",
+    "summary": "Motivated student profile.",
+    "skills": "",
+    "experience": [],
+    "education": [
+      {
+        "college": "Antigravity Academy",
+        "degree": "B.Tech / Science Major",
+        "year": "2026",
+        "cgpa": "9.33",
+        "semesterData": "[{\"id\":1,\"title\":\"Semester 1\",\"courses\":[{\"name\":\"Mathematics I\",\"credits\":4,\"grade\":\"O\"},{\"name\":\"Physics Lab\",\"credits\":2,\"grade\":\"O\"},{\"name\":\"Computer Programming\",\"credits\":3,\"grade\":\"B\"}]}]"
+      }
+    ]
+  }
+]

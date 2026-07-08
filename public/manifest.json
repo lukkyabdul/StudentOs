@@ -1,0 +1,22 @@
+{
+  "short_name": "StudentOS",
+  "name": "Student OS - College Workspace & Dashboard",
+  "description": "Your ultimate dynamic academic workspace featuring note-taking, expense tracking, AI support, resume builder, placement prep, and more.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2997/2997608.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2997/2997608.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/login.html",
+  "background_color": "#0d0e12",
+  "theme_color": "#6c5ce7",
+  "display": "standalone",
+  "orientation": "portrait"
+}

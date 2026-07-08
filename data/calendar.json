@@ -1,0 +1,192 @@
+[
+  {
+    "id": "av1ufrtrgmrc9t40q",
+    "createdAt": "2026-07-08T16:06:42.074Z",
+    "updatedAt": "2026-07-08T16:06:42.075Z",
+    "userId": "system",
+    "title": "New Year's Day",
+    "date": "2026-01-01",
+    "type": "Holiday",
+    "description": "Global New Year Celebration"
+  },
+  {
+    "id": "zni5d62jbmrc9t40v",
+    "createdAt": "2026-07-08T16:06:42.079Z",
+    "updatedAt": "2026-07-08T16:06:42.079Z",
+    "userId": "system",
+    "title": "Pongal",
+    "date": "2026-01-15",
+    "type": "Holiday",
+    "description": "Harvest Festival of South India"
+  },
+  {
+    "id": "sj80m6kspmrc9t40y",
+    "createdAt": "2026-07-08T16:06:42.082Z",
+    "updatedAt": "2026-07-08T16:06:42.082Z",
+    "userId": "system",
+    "title": "Republic Day",
+    "date": "2026-01-26",
+    "type": "Holiday",
+    "description": "Indian Republic Day - National Holiday"
+  },
+  {
+    "id": "q6npmd9anmrc9t410",
+    "createdAt": "2026-07-08T16:06:42.084Z",
+    "updatedAt": "2026-07-08T16:06:42.084Z",
+    "userId": "system",
+    "title": "Maha Shivratri",
+    "date": "2026-02-15",
+    "type": "Holiday",
+    "description": "Lord Shiva Festival"
+  },
+  {
+    "id": "gvmmsmdfqmrc9t412",
+    "createdAt": "2026-07-08T16:06:42.086Z",
+    "updatedAt": "2026-07-08T16:06:42.086Z",
+    "userId": "system",
+    "title": "Holi",
+    "date": "2026-03-04",
+    "type": "Holiday",
+    "description": "Festival of Colors"
+  },
+  {
+    "id": "oc0e6dc1kmrc9t414",
+    "createdAt": "2026-07-08T16:06:42.088Z",
+    "updatedAt": "2026-07-08T16:06:42.088Z",
+    "userId": "system",
+    "title": "Good Friday",
+    "date": "2026-04-03",
+    "type": "Holiday",
+    "description": "Christian Holy Day"
+  },
+  {
+    "id": "i8xuj8m03mrc9t416",
+    "createdAt": "2026-07-08T16:06:42.090Z",
+    "updatedAt": "2026-07-08T16:06:42.090Z",
+    "userId": "system",
+    "title": "Mahavir Jayanti",
+    "date": "2026-04-01",
+    "type": "Holiday",
+    "description": "Birth of Lord Mahavira"
+  },
+  {
+    "id": "903af2g3cmrc9t417",
+    "createdAt": "2026-07-08T16:06:42.091Z",
+    "updatedAt": "2026-07-08T16:06:42.091Z",
+    "userId": "system",
+    "title": "Ambedkar Jayanti",
+    "date": "2026-04-14",
+    "type": "Holiday",
+    "description": "Dr. B.R. Ambedkar Birthday"
+  },
+  {
+    "id": "g87pi2il4mrc9t41a",
+    "createdAt": "2026-07-08T16:06:42.094Z",
+    "updatedAt": "2026-07-08T16:06:42.094Z",
+    "userId": "system",
+    "title": "Budha Purnima",
+    "date": "2026-05-01",
+    "type": "Holiday",
+    "description": "Gautam Buddha Birthday"
+  },
+  {
+    "id": "548ibko79mrc9t41d",
+    "createdAt": "2026-07-08T16:06:42.097Z",
+    "updatedAt": "2026-07-08T16:06:42.097Z",
+    "userId": "system",
+    "title": "Id-ul-Zuha (Bakrid)",
+    "date": "2026-05-27",
+    "type": "Holiday",
+    "description": "Islamic Feast of Sacrifice"
+  },
+  {
+    "id": "kb2r6vp9fmrc9t41e",
+    "createdAt": "2026-07-08T16:06:42.098Z",
+    "updatedAt": "2026-07-08T16:06:42.098Z",
+    "userId": "system",
+    "title": "Muharram",
+    "date": "2026-06-26",
+    "type": "Holiday",
+    "description": "Islamic New Year Mourning Day"
+  },
+  {
+    "id": "m80unekhymrc9t41g",
+    "createdAt": "2026-07-08T16:06:42.100Z",
+    "updatedAt": "2026-07-08T16:06:42.100Z",
+    "userId": "system",
+    "title": "Independence Day",
+    "date": "2026-08-15",
+    "type": "Holiday",
+    "description": "Indian Independence Day - National Holiday"
+  },
+  {
+    "id": "50posftsimrc9t41i",
+    "createdAt": "2026-07-08T16:06:42.102Z",
+    "updatedAt": "2026-07-08T16:06:42.102Z",
+    "userId": "system",
+    "title": "Janmashtami",
+    "date": "2026-09-03",
+    "type": "Holiday",
+    "description": "Birth of Lord Krishna"
+  },
+  {
+    "id": "54hu02x5rmrc9t41j",
+    "createdAt": "2026-07-08T16:06:42.103Z",
+    "updatedAt": "2026-07-08T16:06:42.103Z",
+    "userId": "system",
+    "title": "Milad-un-Nabi",
+    "date": "2026-09-15",
+    "type": "Holiday",
+    "description": "Prophet Muhammad's Birthday"
+  },
+  {
+    "id": "blzdue07pmrc9t41k",
+    "createdAt": "2026-07-08T16:06:42.104Z",
+    "updatedAt": "2026-07-08T16:06:42.104Z",
+    "userId": "system",
+    "title": "Gandhi Jayanti",
+    "date": "2026-10-02",
+    "type": "Holiday",
+    "description": "Mahatma Gandhi Birthday - National Holiday"
+  },
+  {
+    "id": "0ergo49h4mrc9t41l",
+    "createdAt": "2026-07-08T16:06:42.105Z",
+    "updatedAt": "2026-07-08T16:06:42.105Z",
+    "userId": "system",
+    "title": "Dussehra",
+    "date": "2026-10-20",
+    "type": "Holiday",
+    "description": "Vijayadashami - Victory of Good over Evil"
+  },
+  {
+    "id": "zl213b9sbmrc9t41m",
+    "createdAt": "2026-07-08T16:06:42.106Z",
+    "updatedAt": "2026-07-08T16:06:42.106Z",
+    "userId": "system",
+    "title": "Diwali (Deepavali)",
+    "date": "2026-11-08",
+    "type": "Holiday",
+    "description": "Festival of Lights"
+  },
+  {
+    "id": "tbx5i8msmmrc9t41n",
+    "createdAt": "2026-07-08T16:06:42.107Z",
+    "updatedAt": "2026-07-08T16:06:42.107Z",
+    "userId": "system",
+    "title": "Guru Nanak Jayanti",
+    "date": "2026-11-24",
+    "type": "Holiday",
+    "description": "Guru Nanak Dev Birthday"
+  },
+  {
+    "id": "xips1l5nbmrc9t41p",
+    "createdAt": "2026-07-08T16:06:42.109Z",
+    "updatedAt": "2026-07-08T16:06:42.109Z",
+    "userId": "system",
+    "title": "Christmas Day",
+    "date": "2026-12-25",
+    "type": "Holiday",
+    "description": "Christmas Celebration"
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "aptitude": [
+    {
+      "id": 1,
+      "topic": "Quantitative",
+      "question": "Two ships are sailing in the sea on the two sides of a lighthouse. The angle of elevation of the top of the lighthouse is observed from the ships are 30° and 45° respectively. If the lighthouse is 100m high, the distance between the two ships is:",
+      "options": [
+        "173m",
+        "273m",
+        "300m",
+        "200m"
+      ],
+      "answer": "273m",
+      "explanation": "Distance = 100*cot(30°) + 100*cot(45°) = 100*1.732 + 100*1 = 273.2m"
+    },
+    {
+      "id": 2,
+      "topic": "Logical Reasoning",
+      "question": "Find the next number in the series: 3, 5, 9, 17, 33, ...",
+      "options": [
+        "45",
+        "50",
+        "65",
+        "53"
+      ],
+      "answer": "65",
+      "explanation": "The difference between numbers is: 2, 4, 8, 16, 32. So next is 33 + 32 = 65."
+    }
+  ],
+  "coding": [
+    {
+      "id": 1,
+      "title": "Two Sum",
+      "difficulty": "Easy",
+      "problem": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+      "example": "Input: nums = [2,7,11,15], target = 9\nOutput: [0,1]\nExplanation: nums[0] + nums[1] == 9, we return [0, 1].",
+      "solution": "function twoSum(nums, target) {\n  const map = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const complement = target - nums[i];\n    if (map.has(complement)) {\n      return [map.get(complement), i];\n    }\n    map.set(nums[i], i);\n  }\n  return [];\n}"
+    }
+  ],
+  "flashcards": [
+    {
+      "id": 1,
+      "question": "What is ACID in Database Management Systems?",
+      "answer": "ACID stands for Atomicity, Consistency, Isolation, and Durability. These properties ensure that database transactions are processed reliably."
+    },
+    {
+      "id": 2,
+      "question": "Difference between TCP and UDP?",
+      "answer": "TCP (Transmission Control Protocol) is connection-oriented, reliable, and slower. UDP (User Datagram Protocol) is connectionless, unreliable, and faster (used for streaming)."
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Student OS</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">S</div>
+        <span class="sidebar-title">Student OS</span>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="sidebar-item">
+          <a class="sidebar-link active" data-view="dashboard" onclick="navigateTo('dashboard')">
+            <i class="fa-solid fa-chart-line"></i>
+            <span data-localize="dashboard">Dashboard</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="timetable" onclick="navigateTo('timetable')">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span data-localize="timetable">Timetable</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="notes" onclick="navigateTo('notes')">
+            <i class="fa-solid fa-note-sticky"></i>
+            <span data-localize="notes">Notes</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="assignments" onclick="navigateTo('assignments')">
+            <i class="fa-solid fa-tasks"></i>
+            <span data-localize="assignments">Assignments</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="attendance" onclick="navigateTo('attendance')">
+            <i class="fa-solid fa-user-check"></i>
+            <span data-localize="attendance">Attendance</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="ai" onclick="navigateTo('ai')">
+            <i class="fa-solid fa-robot"></i>
+            <span data-localize="ai_assistant">AI Study Assistant</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="calendar" onclick="navigateTo('calendar')">
+            <i class="fa-solid fa-calendar"></i>
+            <span data-localize="calendar">Academic Calendar</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="cgpa" onclick="navigateTo('cgpa')">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span data-localize="cgpa">CGPA Calculator</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="expenses" onclick="navigateTo('expenses')">
+            <i class="fa-solid fa-wallet"></i>
+            <span data-localize="expenses">Expense Tracker</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="digital_id" onclick="navigateTo('digital_id')">
+            <i class="fa-solid fa-id-card"></i>
+            <span data-localize="digital_id">Digital ID Card</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="habits" onclick="navigateTo('habits')">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <span data-localize="habits">Habit Tracker</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="files" onclick="navigateTo('files')">
+            <i class="fa-solid fa-folder-open"></i>
+            <span data-localize="file_storage">File Storage</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="papers" onclick="navigateTo('papers')">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span data-localize="question_papers">Question Papers</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="placement" onclick="navigateTo('placement')">
+            <i class="fa-solid fa-briefcase"></i>
+            <span data-localize="placement_prep">Placement Prep</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" data-view="resume" onclick="navigateTo('resume')">
+            <i class="fa-solid fa-file-invoice"></i>
+            <span data-localize="resume_builder">Resume Builder</span>
+          </a>
+        </li>
+        <li class="sidebar-item" id="facultyPortalSidebarItem" style="display:none;">
+          <a class="sidebar-link" data-view="faculty_portal" onclick="navigateTo('faculty_portal')">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span data-localize="admin_panel">Faculty Portal</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <!-- Language Selector -->
+        <div class="input-group" style="margin-bottom: 0;">
+          <select id="langSelect" class="input-field" style="padding: 6px 12px; font-size: 0.85rem;" onchange="changeLanguage(this.value)">
+            <option value="en">English (EN)</option>
+            <option value="hi">हिंदी (HI)</option>
+            <option value="es">Español (ES)</option>
+          </select>
+        </div>
+        
+        <!-- Theme Toggle Button -->
+        <button id="themeToggle" class="btn btn-secondary" style="padding: 8px;" onclick="toggleTheme()">
+          <i id="themeIcon" class="fa-solid fa-moon"></i> <span id="themeText" data-localize="dark_mode">Dark Mode</span>
+        </button>
+        
+        <!-- User Badge -->
+        <div class="user-info-card">
+          <div class="user-avatar" id="avatarLetter">U</div>
+          <div class="user-details">
+            <div class="user-name" id="userNameLabel">Loading...</div>
+            <div class="user-role" id="userRoleLabel">Student</div>
+          </div>
+          <a href="#" onclick="handleLogout(event)" style="color: var(--danger); font-size: 1.1rem; display: flex; align-items: center;" title="Log Out">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </a>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- MAIN WORKSPACE -->
+    <main class="main-content">
+      <!-- TOP NAVBAR -->
+      <nav class="top-navbar">
+        <div class="nav-left">
+          <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+          <h1 id="navbarTitle" style="font-weight: 700; font-size: 1.25rem;">Dashboard Overview</h1>
+        </div>
+        <div class="nav-right">
+          <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;" id="currentDateLabel">Loading date...</span>
+          <button class="btn btn-secondary" onclick="navigateTo(currentView)" style="padding: 8px 12px;"><i class="fa-solid fa-rotate"></i> Sync</button>
+        </div>
+      </nav>
+      
+      <!-- DYNAMIC CONTENT HOLDER -->
+      <div id="appView" class="view-container">
+        <!-- Rendered HTML dynamically goes here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Javascript Modules -->
+  <script src="js/lang.js"></script>
+  <script src="js/views.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

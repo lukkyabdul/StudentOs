@@ -1,0 +1,19 @@
+[
+  {
+    "id": "jy1sdd2jgmrc4b2zj",
+    "createdAt": "2026-07-08T13:32:42.847Z",
+    "updatedAt": "2026-07-08T13:33:07.411Z",
+    "userId": "7luztx4z0mrc40j0p",
+    "name": "20Mminutes",
+    "category": "Health",
+    "history": {
+      "2026-07-02": false,
+      "2026-07-03": false,
+      "2026-07-04": false,
+      "2026-07-05": false,
+      "2026-07-06": false,
+      "2026-07-07": false,
+      "2026-07-08": false
+    }
+  }
+]

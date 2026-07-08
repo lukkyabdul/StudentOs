@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ebc7yesfhmrc41xro",
+    "createdAt": "2026-07-08T13:25:36.180Z",
+    "updatedAt": "2026-07-08T13:25:36.180Z",
+    "userId": "1khj5qwsvmrc3u8rr",
+    "subject": "Algorithms 101",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "402",
+    "instructor": "Dr. Turing"
+  },
+  {
+    "id": "u0gdmxiqwmrc43avb",
+    "createdAt": "2026-07-08T13:26:39.815Z",
+    "updatedAt": "2026-07-08T13:26:39.815Z",
+    "userId": "7luztx4z0mrc40j0p",
+    "subject": "OPERATING SYSTEM",
+    "day": "Monday",
+    "startTime": "09:30",
+    "endTime": "10:20",
+    "room": "",
+    "instructor": ""
+  },
+  {
+    "id": "ux28q02himrc44b5b",
+    "createdAt": "2026-07-08T13:27:26.831Z",
+    "updatedAt": "2026-07-08T13:27:26.831Z",
+    "userId": "7luztx4z0mrc40j0p",
+    "subject": "DAA",
+    "day": "Monday",
+    "startTime": "10:20",
+    "endTime": "11:10",
+    "room": "",
+    "instructor": ""
+  },
+  {
+    "id": "ws8vo5asfmrc471uw",
+    "createdAt": "2026-07-08T13:29:34.760Z",
+    "updatedAt": "2026-07-08T13:29:34.760Z",
+    "userId": "7luztx4z0mrc40j0p",
+    "subject": "DMGT",
+    "day": "Monday",
+    "startTime": "11:20",
+    "endTime": "12:10",
+    "room": "",
+    "instructor": ""
+  },
+  {
+    "id": "f2uiogas5mrc47q2n",
+    "createdAt": "2026-07-08T13:30:06.143Z",
+    "updatedAt": "2026-07-08T13:30:06.143Z",
+    "userId": "7luztx4z0mrc40j0p",
+    "subject": "EAI",
+    "day": "Monday",
+    "startTime": "12:10",
+    "endTime": "13:00",
+    "room": "",
+    "instructor": ""
+  }
+]
