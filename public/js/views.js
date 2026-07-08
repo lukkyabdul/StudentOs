@@ -48,7 +48,7 @@ window.StudentOSViews = {
         <div class="card stat-card">
           <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
           <div class="stat-info">
-            <span class="stat-value" id="statExpenses">$0</span>
+            <span class="stat-value" id="statExpenses">₹0</span>
             <span class="stat-label">This Month Expenses</span>
           </div>
         </div>
@@ -135,7 +135,7 @@ window.StudentOSViews = {
     const currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
     const currentMonthExpenses = expenses.filter(e => e.type === 'expense' && e.date.startsWith(currentMonth));
     const totalExp = currentMonthExpenses.reduce((sum, item) => sum + item.amount, 0);
-    document.getElementById('statExpenses').innerText = `$${totalExp}`;
+    document.getElementById('statExpenses').innerText = `₹${totalExp}`;
 
     // Pending Tasks Stat
     const pendingTasks = assignments.filter(a => a.status !== 'Completed');
@@ -673,21 +673,21 @@ window.StudentOSViews = {
         <div class="card" style="display:flex; align-items:center; gap:20px;">
           <div class="stat-icon" style="color:var(--success);"><i class="fa-solid fa-wallet"></i></div>
           <div class="stat-info">
-            <span class="stat-value" id="expIncome">$0</span>
+            <span class="stat-value" id="expIncome">₹0</span>
             <span class="stat-label">Total Pocket Money / Income</span>
           </div>
         </div>
         <div class="card" style="display:flex; align-items:center; gap:20px;">
           <div class="stat-icon" style="color:var(--danger);"><i class="fa-solid fa-arrow-down-up-across-line"></i></div>
           <div class="stat-info">
-            <span class="stat-value" id="expSpend">$0</span>
+            <span class="stat-value" id="expSpend">₹0</span>
             <span class="stat-label">Total Spent Expenses</span>
           </div>
         </div>
         <div class="card" style="display:flex; align-items:center; gap:20px;">
           <div class="stat-icon" style="color:var(--secondary);"><i class="fa-solid fa-piggy-bank"></i></div>
           <div class="stat-info">
-            <span class="stat-value" id="expBalance">$0</span>
+            <span class="stat-value" id="expBalance">₹0</span>
             <span class="stat-label">Remaining Balance</span>
           </div>
         </div>
@@ -1990,9 +1990,9 @@ function renderExpenses(list) {
   const spent = list.filter(e => e.type === 'expense').reduce((sum, item) => sum + item.amount, 0);
   const balance = income - spent;
 
-  document.getElementById('expIncome').innerText = `$${income}`;
-  document.getElementById('expSpend').innerText = `$${spent}`;
-  document.getElementById('expBalance').innerText = `$${balance}`;
+  document.getElementById('expIncome').innerText = `₹${income}`;
+  document.getElementById('expSpend').innerText = `₹${spent}`;
+  document.getElementById('expBalance').innerText = `₹${balance}`;
 
   const histContainer = document.getElementById('expenseList');
   if (list.length === 0) {
@@ -2006,7 +2006,7 @@ function renderExpenses(list) {
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
           <span style="font-weight:700; color: ${t.type === 'income' ? 'var(--success)' : 'var(--danger)'};">
-            ${t.type === 'income' ? '+' : '-'}$${t.amount}
+            ${t.type === 'income' ? '+' : '-'}₹${t.amount}
           </span>
           <button class="btn btn-secondary" onclick="deleteExpense('${t.id}')" style="padding:4px 8px; font-size:0.75rem;"><i class="fa-solid fa-trash"></i></button>
         </div>
@@ -2031,7 +2031,7 @@ function renderExpenses(list) {
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
             <span><strong>${cat}</strong></span>
-            <span>$${amt} (${pct}%)</span>
+            <span>₹${amt} (${pct}%)</span>
           </div>
           <div class="budget-progress-bar">
             <div class="budget-progress-fill" style="width: ${pct}%;"></div>
