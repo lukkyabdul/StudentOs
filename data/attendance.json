@@ -1,0 +1,70 @@
+[
+  {
+    "id": "5jfzs06a2mrdbzart",
+    "createdAt": "2026-07-09T09:55:16.169Z",
+    "updatedAt": "2026-07-09T09:55:16.169Z",
+    "userId": "sa16bd0ljmrdb7r6f",
+    "subject": "Operating Systems",
+    "attended": 1,
+    "total": 1,
+    "target": 75,
+    "logs": [
+      {
+        "date": "2026-07-09T12:00:00.000Z",
+        "status": "present",
+        "markedBy": "Test Faculty CS"
+      }
+    ]
+  },
+  {
+    "id": "m6zo58bl1mreq28tl",
+    "createdAt": "2026-07-10T09:17:14.409Z",
+    "updatedAt": "2026-07-10T09:17:14.409Z",
+    "userId": "s4dkrcfklmreptk5m",
+    "subject": "Physics",
+    "attended": 1,
+    "total": 1,
+    "target": 75,
+    "logs": [
+      {
+        "date": "2026-07-10T12:00:00.000Z",
+        "status": "present",
+        "markedBy": "Test Faculty"
+      }
+    ]
+  },
+  {
+    "id": "87t6zmjfnmreqiy6k",
+    "createdAt": "2026-07-10T09:30:13.772Z",
+    "updatedAt": "2026-07-10T09:30:13.772Z",
+    "userId": "sa16bd0ljmrdb7r6f",
+    "subject": "Chemistry",
+    "attended": 0,
+    "total": 1,
+    "target": 75,
+    "logs": [
+      {
+        "date": "2026-07-10T12:00:00.000Z",
+        "status": "absent",
+        "markedBy": "Test Faculty"
+      }
+    ]
+  },
+  {
+    "id": "j3rp5j81nmreqiy6s",
+    "createdAt": "2026-07-10T09:30:13.780Z",
+    "updatedAt": "2026-07-10T09:30:13.780Z",
+    "userId": "s4dkrcfklmreptk5m",
+    "subject": "Chemistry",
+    "attended": 1,
+    "total": 1,
+    "target": 75,
+    "logs": [
+      {
+        "date": "2026-07-10T12:00:00.000Z",
+        "status": "present",
+        "markedBy": "Test Faculty"
+      }
+    ]
+  }
+]

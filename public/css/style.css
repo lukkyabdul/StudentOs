@@ -680,6 +680,24 @@ a:hover {
 .circular-progress {
   transform: rotate(-90deg);
 }
+.premium-card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+.premium-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primary) !important;
+  box-shadow: 0 10px 25px rgba(115, 103, 240, 0.25) !important;
+}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .attendance-actions-row {
   display: flex;
   gap: 10px;

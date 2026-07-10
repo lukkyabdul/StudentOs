@@ -434,13 +434,19 @@ window.StudentOSViews = {
   // VIEW 5: ATTENDANCE TRACKING
   // ----------------------------------------------------
   async attendance(container) {
+    const user = JSON.parse(localStorage.getItem('student_os_user')) || {};
+    const isStudent = user.role === 'student';
+
     container.innerHTML = `
       <div class="view-header">
         <div class="view-title-wrap">
           <h2 class="view-title" data-localize="attendance">Attendance Tracker</h2>
           <p class="view-subtitle">Track your class attendance and keep target percentage above 75%.</p>
         </div>
-        <button class="btn btn-primary" onclick="openAddAttendanceModal()"><i class="fa-solid fa-plus"></i> Add Subject</button>
+        ${isStudent ? '' : `<button class="btn btn-primary" onclick="openAddAttendanceModal()"><i class="fa-solid fa-plus"></i> Add Subject</button>`}
+      </div>
+
+      <div class="attendance-summary-grid" id="attendanceSummaryPanel" style="margin-bottom: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
       </div>
       
       <div class="attendance-cards" id="attendanceGrid">
@@ -1269,49 +1275,210 @@ window.StudentOSViews = {
   // VIEW 16: FACULTY PORTAL
   // ----------------------------------------------------
   async faculty_portal(container) {
+    const user = JSON.parse(localStorage.getItem('student_os_user')) || {};
     container.innerHTML = `
       <div class="view-header">
         <div class="view-title-wrap">
-          <h2 class="view-title">Faculty Advisor Portal</h2>
-          <p class="view-subtitle">Review, verify and track the attendance logs of your assigned students.</p>
+          <h2 class="view-title">Faculty Portal - ${user.department || ''} Department</h2>
+          <p class="view-subtitle">${user.collegeName || 'College Student OS'} | Manage students, publish notes/assignments, and mark attendance.</p>
         </div>
       </div>
       
-      <div class="card" style="padding: 24px;">
-        <h3 class="card-title"><i class="fa-solid fa-users"></i> Assigned Students List</h3>
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; margin-top:16px;">
-          <thead>
-            <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-weight:600;">
-              <th style="padding: 12px 8px;">Name</th>
-              <th style="padding: 12px 8px;">Username</th>
-              <th style="padding: 12px 8px;">Email</th>
-              <th style="padding: 12px 8px;">Verification Status</th>
-              <th style="padding: 12px 8px;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="facultyStudentsTable">
-            <tr>
-              <td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Loading students list...</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="tab-buttons" style="margin-bottom:24px;">
+        <button class="tab-btn active" id="btnFacultyStudents" onclick="switchFacultyTab('students')">Manage Students</button>
+        <button class="tab-btn" id="btnFacultyPublish" onclick="switchFacultyTab('publish')">Publish Material</button>
+        <button class="tab-btn" id="btnFacultyAttendance" onclick="switchFacultyTab('attendance')">Mark Attendance</button>
       </div>
-      
-      <!-- Student Details Modal (for attendance view) -->
-      <div id="studentDetailModal" class="card" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; width:550px; max-width:90%; max-height:80%; overflow-y:auto;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h3 class="card-title" id="studentDetailTitle" style="margin:0;"><i class="fa-solid fa-graduation-cap"></i> Student Attendance Logs</h3>
-          <button class="btn btn-secondary" onclick="closeStudentDetailModal()" style="padding:4px 8px;">X</button>
-        </div>
-        <div id="studentDetailContent" style="display:flex; flex-direction:column; gap:16px;">
-          <p style="color:var(--text-muted);">Loading details...</p>
-        </div>
+
+      <div id="facultyContentPanel">
+        <!-- Sub-panel content will be dynamically injected here -->
       </div>
-      <div id="studentDetailOverlay" onclick="closeStudentDetailModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
     `;
 
-    // Fetch and render assigned students
-    await refreshFacultyStudents();
+    // Initialize content panel view
+    window.switchFacultyTab = async function(tab) {
+      const panel = document.getElementById('facultyContentPanel');
+      if (!panel) return;
+
+      const btnStudents = document.getElementById('btnFacultyStudents');
+      const btnPublish = document.getElementById('btnFacultyPublish');
+      const btnAttendance = document.getElementById('btnFacultyAttendance');
+
+      btnStudents.classList.remove('active');
+      btnPublish.classList.remove('active');
+      btnAttendance.classList.remove('active');
+
+      if (tab === 'students') {
+        btnStudents.classList.add('active');
+        panel.innerHTML = `
+          <div class="card" style="padding: 24px;">
+            <h3 class="card-title"><i class="fa-solid fa-users"></i> Assigned Students List</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; margin-top:16px;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-weight:600;">
+                  <th style="padding: 12px 8px;">Name</th>
+                  <th style="padding: 12px 8px;">Username</th>
+                  <th style="padding: 12px 8px;">Email</th>
+                  <th style="padding: 12px 8px;">Department</th>
+                  <th style="padding: 12px 8px;">Verification Status</th>
+                  <th style="padding: 12px 8px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="facultyStudentsTable">
+                <tr>
+                  <td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">Loading students list...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Student Details Modal (for attendance view) -->
+          <div id="studentDetailModal" class="card" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; width:550px; max-width:90%; max-height:80%; overflow-y:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+              <h3 class="card-title" id="studentDetailTitle" style="margin:0;"><i class="fa-solid fa-graduation-cap"></i> Student Attendance Logs</h3>
+              <button class="btn btn-secondary" onclick="closeStudentDetailModal()" style="padding:4px 8px;">X</button>
+            </div>
+            <div id="studentDetailContent" style="display:flex; flex-direction:column; gap:16px;">
+              <p style="color:var(--text-muted);">Loading details...</p>
+            </div>
+          </div>
+          <div id="studentDetailOverlay" onclick="closeStudentDetailModal()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
+        `;
+        await refreshFacultyStudents();
+      } else if (tab === 'publish') {
+        btnPublish.classList.add('active');
+        panel.innerHTML = `
+          <div class="grid-2">
+            <!-- Publish Note Form -->
+            <div class="card" style="padding: 24px;">
+              <h3 class="card-title" style="margin-bottom:15px;"><i class="fa-solid fa-note-sticky"></i> Publish Note to Department</h3>
+              <form onsubmit="handlePublishNote(event)">
+                <div class="input-group">
+                  <label class="input-label">Note Title</label>
+                  <input type="text" id="pubNoteTitle" class="input-field" placeholder="e.g. Unit 1: Introduction to Operating Systems" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Category</label>
+                  <input type="text" id="pubNoteCategory" class="input-field" placeholder="e.g. Operating Systems" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Content (Markdown / Text)</label>
+                  <textarea id="pubNoteContent" class="input-field" rows="6" placeholder="Write note contents here..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fa-solid fa-paper-plane"></i> Publish Note</button>
+              </form>
+            </div>
+
+            <!-- Publish Assignment Form -->
+            <div class="card" style="padding: 24px;">
+              <h3 class="card-title" style="margin-bottom:15px;"><i class="fa-solid fa-tasks"></i> Publish Assignment to Department</h3>
+              <form onsubmit="handlePublishAssignment(event)">
+                <div class="input-group">
+                  <label class="input-label">Assignment Title</label>
+                  <input type="text" id="pubAssTitle" class="input-field" placeholder="e.g. Lab Assignment 2: CPU Scheduling" required>
+                </div>
+                <div class="grid-2">
+                  <div class="input-group">
+                    <label class="input-label">Subject / Course</label>
+                    <input type="text" id="pubAssSubject" class="input-field" placeholder="e.g. OS Lab" required>
+                  </div>
+                  <div class="input-group">
+                    <label class="input-label">Due Date</label>
+                    <input type="date" id="pubAssDueDate" class="input-field" required>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Priority</label>
+                  <select id="pubAssPriority" class="input-field">
+                    <option value="Low">Low</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="High">High</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Description / Instructions</label>
+                  <textarea id="pubAssDesc" class="input-field" rows="3" placeholder="Add assignment details/guidelines..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fa-solid fa-paper-plane"></i> Publish Assignment</button>
+              </form>
+            </div>
+          </div>
+        `;
+      } else if (tab === 'attendance') {
+        btnAttendance.classList.add('active');
+        panel.innerHTML = `
+          <div class="card" style="padding: 24px;">
+            <h3 class="card-title" style="margin-bottom:20px;"><i class="fa-solid fa-user-check"></i> Mark Student Attendance</h3>
+            <form onsubmit="handleMarkAttendanceBulk(event)">
+              <div class="grid-2" style="margin-bottom: 20px;">
+                <div class="input-group">
+                  <label class="input-label">Subject Name</label>
+                  <input type="text" id="markAttSubject" class="input-field" placeholder="e.g. Mathematics" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Date</label>
+                  <input type="date" id="markAttDate" class="input-field" required>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 20px;">
+                <label class="input-label" style="margin-bottom: 10px; display: block;">Students Attendance List</label>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                    <thead>
+                      <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-muted); font-weight:600;">
+                        <th style="padding: 12px 8px;">Student Name</th>
+                        <th style="padding: 12px 8px;">Username</th>
+                        <th style="padding: 12px 8px; text-align: center;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="markAttStudentsTableBody">
+                      <tr>
+                        <td colspan="3" style="text-align:center; padding:20px; color:var(--text-muted);">Loading students list...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fa-solid fa-check"></i> Submit Attendance for All</button>
+            </form>
+          </div>
+        `;
+        
+        document.getElementById('markAttDate').value = new Date().toISOString().split('T')[0];
+        
+        const studentsList = await fetchAPI('/api/faculty/students') || [];
+        const tbody = document.getElementById('markAttStudentsTableBody');
+        if (tbody) {
+          if (studentsList.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--text-muted);">No verified students in department</td></tr>';
+          } else {
+            tbody.innerHTML = studentsList.map(s => `
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 12px 8px; font-weight: 500; color: var(--text-color);">${s.fullName}</td>
+                <td style="padding: 12px 8px; color: var(--text-muted);">${s.username}</td>
+                <td style="padding: 12px 8px;">
+                  <div style="display: flex; gap: 16px; align-items: center; justify-content: center;">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; margin: 0;">
+                      <input type="checkbox" name="status-${s.id}" class="att-present-cb" data-student-id="${s.id}" checked onclick="handleStatusCheckboxChangeBulk('${s.id}', 'present')">
+                      <span style="color: var(--success); font-size: 0.9rem;"><i class="fa-solid fa-circle-check"></i> Present</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; margin: 0;">
+                      <input type="checkbox" name="status-${s.id}" class="att-absent-cb" data-student-id="${s.id}" onclick="handleStatusCheckboxChangeBulk('${s.id}', 'absent')">
+                      <span style="color: var(--danger); font-size: 0.9rem;"><i class="fa-solid fa-circle-xmark"></i> Absent</span>
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+      }
+    };
+
+    // Default to show students tab
+    await window.switchFacultyTab('students');
   }
 };
 
@@ -1561,10 +1728,81 @@ function closeAddAttendanceModal() {
 }
 function renderAttendanceGrid(subjects) {
   const grid = document.getElementById('attendanceGrid');
+  const summaryPanel = document.getElementById('attendanceSummaryPanel');
+  
   if (subjects.length === 0) {
     grid.innerHTML = `<p style="color:var(--text-muted); font-size:0.9rem; text-align:center; padding:30px; width:100%;">No subjects tracked yet.</p>`;
+    if (summaryPanel) summaryPanel.style.display = 'none';
     return;
   }
+  
+  const user = JSON.parse(localStorage.getItem('student_os_user')) || {};
+  const isStudent = user.role === 'student';
+
+  if (summaryPanel) {
+    summaryPanel.style.display = 'grid';
+    const totalAttended = subjects.reduce((sum, s) => sum + s.attended, 0);
+    const totalClasses = subjects.reduce((sum, s) => sum + s.total, 0);
+    const average = totalClasses > 0 ? Math.round((totalAttended / totalClasses) * 100) : 100;
+    
+    // Status text & color
+    let statusText = "Excellent";
+    let statusColor = "var(--success)";
+    let statusBg = "rgba(40, 199, 111, 0.1)";
+    let insightText = "All subject percentages are on track. Keep it up!";
+    
+    const underSubjects = subjects.filter(s => {
+      const pct = s.total > 0 ? (s.attended / s.total) * 100 : 100;
+      return pct < s.target;
+    });
+
+    if (underSubjects.length > 0) {
+      statusText = "Needs Attention";
+      statusColor = "var(--danger)";
+      statusBg = "rgba(234, 84, 85, 0.1)";
+      insightText = `${underSubjects.length} subject${underSubjects.length > 1 ? 's' : ''} fall below your target percentage.`;
+    } else if (average < 80) {
+      statusText = "Good (Borderline)";
+      statusColor = "var(--warning)";
+      statusBg = "rgba(255, 159, 67, 0.1)";
+      insightText = "Your average is good, but close to the limit. Attend next few lectures.";
+    }
+
+    summaryPanel.innerHTML = `
+      <div class="card" style="padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 5px solid var(--primary); background: var(--bg-card); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <div style="background: rgba(115, 103, 240, 0.1); color: var(--primary); padding: 12px; border-radius: 12px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block; font-weight: 500;">Overall Attendance</span>
+          <span style="font-size: 1.8rem; font-weight: 700; color: var(--text-color);">${average}%</span>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 5px solid ${statusColor}; background: var(--bg-card); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <div style="background: ${statusBg}; color: ${statusColor}; padding: 12px; border-radius: 12px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;">
+          <i class="fa-solid ${underSubjects.length > 0 ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i>
+        </div>
+        <div>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block; font-weight: 500;">Status</span>
+          <span style="font-size: 1.25rem; font-weight: 700; color: ${statusColor}; display: block; line-height: 1.2; margin-bottom: 2px;">${statusText}</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.1; display: block;">${insightText}</span>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 20px; display: flex; align-items: center; gap: 16px; border-left: 5px solid var(--info); background: var(--bg-card); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <div style="background: rgba(0, 207, 232, 0.1); color: var(--info); padding: 12px; border-radius: 12px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div>
+          <span style="font-size: 0.85rem; color: var(--text-muted); display: block; font-weight: 500;">Conducted Classes</span>
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-color);">${totalAttended} / ${totalClasses}</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Attended classes across all subjects</span>
+        </div>
+      </div>
+    `;
+  }
+
   grid.innerHTML = subjects.map(s => {
     const pct = s.total > 0 ? Math.round((s.attended / s.total) * 100) : 100;
     const isUnder = pct < s.target;
@@ -1574,34 +1812,87 @@ function renderAttendanceGrid(subjects) {
     const circ = 2 * Math.PI * radius;
     const strokeDash = circ - (pct / 100) * circ;
 
+    const statusColor = isUnder ? 'var(--danger)' : 'var(--success)';
+    const shadowColor = isUnder ? 'rgba(234, 84, 85, 0.15)' : 'rgba(40, 199, 111, 0.15)';
+
+    const logs = s.logs || [];
+
     return `
-      <div class="card attendance-card" style="border-top: 4px solid ${isUnder ? 'var(--danger)' : 'var(--success)'}">
-        <h4 style="font-weight:600; font-size:1.1rem; text-align:center;">${s.subject}</h4>
+      <div class="card attendance-card premium-card" style="border: 1px solid var(--border-color); border-top: 5px solid ${statusColor}; box-shadow: 0 4px 20px ${shadowColor}; transition: all 0.3s ease; position: relative;">
+        <h4 style="font-weight:600; font-size:1.15rem; text-align:center; color: var(--text-color); margin-top: 5px; margin-bottom: 0;">${s.subject}</h4>
         
         <div class="attendance-progress-wrap">
           <svg width="120" height="120" class="circular-progress">
-            <circle cx="60" cy="60" r="${radius}" fill="none" stroke="var(--border-color)" stroke-width="10" />
-            <circle cx="60" cy="60" r="${radius}" fill="none" stroke="${isUnder ? 'var(--danger)' : 'var(--success)'}" stroke-width="10" 
-                    stroke-dasharray="${circ}" stroke-dashoffset="${strokeDash}" stroke-linecap="round" />
+            <circle cx="60" cy="60" r="${radius}" fill="none" stroke="var(--border-color)" stroke-width="8" />
+            <circle cx="60" cy="60" r="${radius}" fill="none" stroke="url(#gradient-${s.id})" stroke-width="10" 
+                    stroke-dasharray="${circ}" stroke-dashoffset="${strokeDash}" stroke-linecap="round" style="filter: drop-shadow(0 0 4px ${statusColor});" />
+            <defs>
+              <linearGradient id="gradient-${s.id}" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="${isUnder ? '#ff9f43' : '#28c76f'}" />
+                <stop offset="100%" stop-color="${isUnder ? '#ea5455' : '#00cfe8'}" />
+              </linearGradient>
+            </defs>
           </svg>
-          <span class="attendance-percentage" style="color:${isUnder ? 'var(--danger)' : 'var(--success)'}">${pct}%</span>
+          <span class="attendance-percentage" style="color:${statusColor}; font-size: 1.6rem; font-weight: 800;">${pct}%</span>
         </div>
         
-        <div style="display:flex; justify-content:space-around; font-size:0.85rem; border-top:1px solid var(--border-color); padding-top:12px;">
-          <div>Classes: <strong>${s.attended}/${s.total}</strong></div>
-          <div>Target: <strong>${s.target}%</strong></div>
+        <div style="display:flex; justify-content:space-around; font-size:0.85rem; border-top:1px solid var(--border-color); padding-top:12px; margin-bottom: 8px;">
+          <div>Classes: <strong style="font-size: 0.95rem; color: var(--text-color);">${s.attended}/${s.total}</strong></div>
+          <div>Target: <strong style="font-size: 0.95rem; color: var(--text-color);">${s.target}%</strong></div>
         </div>
 
-        <div class="attendance-actions-row">
-          <button class="btn btn-primary" style="flex:1; padding:8px;" onclick="logAttendance('${s.id}', 'present')"><i class="fa-solid fa-check"></i> Present</button>
-          <button class="btn btn-secondary" style="flex:1; padding:8px; border-color:var(--danger); color:var(--danger);" onclick="logAttendance('${s.id}', 'absent')"><i class="fa-solid fa-xmark"></i> Absent</button>
+        <div style="text-align: center; margin-bottom: 8px;">
+          <button class="btn btn-secondary" onclick="toggleLogsDropdown('${s.id}')" style="font-size: 0.75rem; padding: 6px 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-input);">
+            <i class="fa-solid fa-list-check"></i> View Attendance Logs (${logs.length}) <i class="fa-solid fa-chevron-down" id="arrow-${s.id}"></i>
+          </button>
+        </div>
+
+        <div id="logsContainer-${s.id}" style="display: none; max-height: 150px; overflow-y: auto; border-radius: 6px; background: var(--bg-card-hover); padding: 8px; border: 1px solid var(--border-color); margin-bottom: 8px; font-size: 0.8rem; animation: slideDown 0.2s ease;">
+          ${logs.length === 0 ? '<p style="text-align:center; color:var(--text-muted); margin:0; padding:6px;">No logs recorded yet</p>' : logs.map(l => {
+            const formattedDate = new Date(l.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            const badgeColor = l.status === 'present' ? 'var(--success)' : 'var(--danger)';
+            const badgeBg = l.status === 'present' ? 'rgba(40, 199, 111, 0.15)' : 'rgba(234, 84, 85, 0.15)';
+            return `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 4px; border-bottom: 1px dashed var(--border-color);">
+                <span style="font-weight: 500; color: var(--text-color);">${formattedDate}</span>
+                <span style="background: ${badgeBg}; color: ${badgeColor}; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.7rem; text-transform: uppercase;">${l.status}</span>
+              </div>
+            `;
+          }).reverse().join('')}
+        </div>
+
+        ${isStudent ? '' : `
+        <div class="attendance-actions-row" style="margin-top: auto; display: flex; gap: 8px;">
+          <button class="btn btn-primary" style="flex:1; padding:8px; display:flex; align-items:center; justify-content:center; gap:4px;" onclick="logAttendance('${s.id}', 'present')"><i class="fa-solid fa-check"></i> Present</button>
+          <button class="btn btn-secondary" style="flex:1; padding:8px; border-color:var(--danger); color:var(--danger); display:flex; align-items:center; justify-content:center; gap:4px;" onclick="logAttendance('${s.id}', 'absent')"><i class="fa-solid fa-xmark"></i> Absent</button>
         </div>
         
-        <button class="btn btn-secondary" onclick="deleteAttendance('${s.id}')" style="font-size:0.75rem; padding:4px;"><i class="fa-solid fa-trash"></i> Delete Tracker</button>
+        <button class="btn btn-secondary" onclick="deleteAttendance('${s.id}')" style="font-size:0.75rem; padding:4px; margin-top:8px; width: 100%; display:flex; align-items:center; justify-content:center; gap:4px; border-color: var(--border-color);"><i class="fa-solid fa-trash"></i> Delete Tracker</button>
+        `}
       </div>
     `;
   }).join('');
 }
+
+window.toggleLogsDropdown = function(subjectId) {
+  const container = document.getElementById(`logsContainer-${subjectId}`);
+  const arrow = document.getElementById(`arrow-${subjectId}`);
+  if (!container) return;
+
+  if (container.style.display === 'none') {
+    container.style.display = 'block';
+    if (arrow) {
+      arrow.classList.remove('fa-chevron-down');
+      arrow.classList.add('fa-chevron-up');
+    }
+  } else {
+    container.style.display = 'none';
+    if (arrow) {
+      arrow.classList.remove('fa-chevron-up');
+      arrow.classList.add('fa-chevron-down');
+    }
+  }
+};
 async function handleAddAttendance(e) {
   e.preventDefault();
   const subject = document.getElementById('attSubject').value;
@@ -2642,7 +2933,7 @@ async function refreshFacultyStudents() {
 
   const students = await fetchAPI('/api/faculty/students') || [];
   if (students.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No students assigned to you yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No students assigned to you yet.</td></tr>`;
     return;
   }
 
@@ -2652,6 +2943,7 @@ async function refreshFacultyStudents() {
         <td style="padding:12px 8px;"><strong>${s.fullName}</strong></td>
         <td style="padding:12px 8px;">${s.username}</td>
         <td style="padding:12px 8px;">${s.email}</td>
+        <td style="padding:12px 8px;">${s.department || 'N/A'}</td>
         <td style="padding:12px 8px;">
           <span class="badge badge-${s.isVerified ? 'low' : 'high'}">
             ${s.isVerified ? 'Verified' : 'Pending Verification'}
@@ -2713,4 +3005,103 @@ async function viewStudentAttendance(studentId, fullName) {
 function closeStudentDetailModal() {
   document.getElementById('studentDetailModal').style.display = 'none';
   document.getElementById('studentDetailOverlay').style.display = 'none';
+}
+
+async function handlePublishNote(e) {
+  e.preventDefault();
+  const title = document.getElementById('pubNoteTitle').value;
+  const category = document.getElementById('pubNoteCategory').value;
+  const content = document.getElementById('pubNoteContent').value;
+
+  const res = await fetchAPI('/api/faculty/publish-note', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, category, content })
+  });
+
+  if (res) {
+    alert('Note published successfully to all students in department!');
+    document.getElementById('pubNoteTitle').value = '';
+    document.getElementById('pubNoteCategory').value = '';
+    document.getElementById('pubNoteContent').value = '';
+  }
+}
+
+async function handlePublishAssignment(e) {
+  e.preventDefault();
+  const title = document.getElementById('pubAssTitle').value;
+  const subject = document.getElementById('pubAssSubject').value;
+  const dueDate = document.getElementById('pubAssDueDate').value;
+  const priority = document.getElementById('pubAssPriority').value;
+  const description = document.getElementById('pubAssDesc').value;
+
+  const res = await fetchAPI('/api/faculty/publish-assignment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, subject, dueDate, priority, description })
+  });
+
+  if (res) {
+    alert('Assignment published successfully to all students in department!');
+    document.getElementById('pubAssTitle').value = '';
+    document.getElementById('pubAssSubject').value = '';
+    document.getElementById('pubAssDueDate').value = '';
+    document.getElementById('pubAssDesc').value = '';
+  }
+}
+
+window.handleStatusCheckboxChangeBulk = function(studentId, type) {
+  const presentCbs = document.querySelectorAll(`.att-present-cb[data-student-id="${studentId}"]`);
+  const absentCbs = document.querySelectorAll(`.att-absent-cb[data-student-id="${studentId}"]`);
+  if (presentCbs.length === 0 || absentCbs.length === 0) return;
+
+  const presentCb = presentCbs[0];
+  const absentCb = absentCbs[0];
+
+  if (type === 'present') {
+    if (presentCb.checked) {
+      absentCb.checked = false;
+    } else {
+      absentCb.checked = true;
+    }
+  } else if (type === 'absent') {
+    if (absentCb.checked) {
+      presentCb.checked = false;
+    } else {
+      presentCb.checked = true;
+    }
+  }
+};
+
+async function handleMarkAttendanceBulk(e) {
+  e.preventDefault();
+  const subject = document.getElementById('markAttSubject').value;
+  const date = document.getElementById('markAttDate').value;
+
+  const presentCbs = document.querySelectorAll('.att-present-cb');
+  const records = [];
+
+  presentCbs.forEach(cb => {
+    const studentId = cb.getAttribute('data-student-id');
+    const status = cb.checked ? 'present' : 'absent';
+    records.push({ studentId, status });
+  });
+
+  if (records.length === 0) {
+    alert('No students to mark attendance for.');
+    return;
+  }
+
+  const res = await fetchAPI('/api/faculty/mark-attendance-bulk', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subject, date, records })
+  });
+
+  if (res) {
+    alert('Attendance marked successfully for all students!');
+    document.getElementById('markAttSubject').value = '';
+    presentCbs.forEach(cb => cb.checked = true);
+    document.querySelectorAll('.att-absent-cb').forEach(cb => cb.checked = false);
+  }
 }

@@ -194,8 +194,8 @@
           
           <div class="grid-2">
             <div class="input-group">
-              <label class="input-label">Password</label>
-              <input type="password" id="regPass" class="input-field" placeholder="Create password" required autocomplete="new-password">
+              <label class="input-label">Department</label>
+              <input type="text" id="regDept" class="input-field" placeholder="e.g. Computer Science" required>
             </div>
             <div class="input-group">
               <label class="input-label">Role</label>
@@ -206,12 +206,18 @@
               </select>
             </div>
           </div>
-
-          <div class="input-group" id="advisorGroup">
-            <label class="input-label">Select Faculty Advisor</label>
-            <select id="regAdvisor" class="input-field">
-              <option value="">No Advisor (Independent)</option>
-            </select>
+          
+          <div class="grid-2">
+            <div class="input-group">
+              <label class="input-label">Password</label>
+              <input type="password" id="regPass" class="input-field" placeholder="Create password" required autocomplete="new-password">
+            </div>
+            <div class="input-group" id="advisorGroup">
+              <label class="input-label">Select Faculty Advisor</label>
+              <select id="regAdvisor" class="input-field">
+                <option value="">No Advisor (Independent)</option>
+              </select>
+            </div>
           </div>
           
           <div class="input-group">
@@ -333,6 +339,7 @@
       const email = document.getElementById('regEmail').value;
       const fullName = document.getElementById('regFullName').value;
       const collegeName = document.getElementById('regCollege').value;
+      const department = document.getElementById('regDept').value;
       const password = document.getElementById('regPass').value;
       const role = document.getElementById('regRole').value;
       const securityQuestion = document.getElementById('regQuestion').value;
@@ -345,7 +352,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             username, email, password, role,
-            securityQuestion, securityAnswer, fullName, collegeName, facultyId
+            securityQuestion, securityAnswer, fullName, collegeName, department, facultyId
           })
         });
         

@@ -137,7 +137,7 @@ async function seedDefaultHolidays() {
 // Auth Endpoints
 app.post('/api/auth/register', async (req, res) => {
   try {
-    const { username, password, email, role, securityQuestion, securityAnswer, fullName, collegeName, facultyId } = req.body;
+    const { username, password, email, role, securityQuestion, securityAnswer, fullName, collegeName, department, facultyId } = req.body;
     
     if (!username || !password || !email || !securityQuestion || !securityAnswer) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -163,6 +163,7 @@ app.post('/api/auth/register', async (req, res) => {
       securityAnswer: securityAnswer.toLowerCase().trim(),
       fullName: fullName || username,
       collegeName: collegeName || 'College Student OS',
+      department: department || '',
       facultyId: userRole === 'student' ? (facultyId || '') : '',
       isVerified
     });
@@ -215,7 +216,8 @@ app.post('/api/auth/login', async (req, res) => {
         email: user.email,
         role: user.role,
         fullName: user.fullName,
-        collegeName: user.collegeName
+        collegeName: user.collegeName,
+        department: user.department || ''
       }
     });
   } catch (error) {
@@ -276,7 +278,8 @@ app.get('/api/auth/user', authenticateToken, async (req, res) => {
       email: user.email,
       role: user.role,
       fullName: user.fullName,
-      collegeName: user.collegeName
+      collegeName: user.collegeName,
+      department: user.department || ''
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -319,8 +322,39 @@ app.delete('/api/timetable/:id', authenticateToken, async (req, res) => {
 
 // Notes Endpoints
 app.get('/api/notes', authenticateToken, async (req, res) => {
-  const items = await db.find('notes', { userId: req.user.id });
-  res.json(items);
+  try {
+    const user = await db.findOne('users', { id: req.user.id });
+    const personalNotes = await db.find('notes', { userId: req.user.id });
+
+    if (user && user.role === 'student') {
+      const sharedNotes = await db.find('notes', {
+        isShared: true,
+        collegeName: user.collegeName,
+        department: user.department
+      });
+
+      if (sharedNotes.length > 0) {
+        for (const note of sharedNotes) {
+          const exists = personalNotes.some(n => n.sharedNoteId === note.id);
+          if (!exists) {
+            const newNote = await db.insert('notes', {
+              userId: req.user.id,
+              title: note.title,
+              content: note.content,
+              category: note.category || 'General',
+              sharedNoteId: note.id,
+              assignedBy: note.authorName || 'Faculty'
+            });
+            personalNotes.push(newNote);
+          }
+        }
+      }
+    }
+
+    res.json(personalNotes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post('/api/notes', authenticateToken, async (req, res) => {
@@ -353,8 +387,42 @@ app.delete('/api/notes/:id', authenticateToken, async (req, res) => {
 
 // Assignments Endpoints
 app.get('/api/assignments', authenticateToken, async (req, res) => {
-  const items = await db.find('assignments', { userId: req.user.id });
-  res.json(items);
+  try {
+    const user = await db.findOne('users', { id: req.user.id });
+    const personalAssignments = await db.find('assignments', { userId: req.user.id });
+
+    if (user && user.role === 'student') {
+      const sharedAssignments = await db.find('assignments', {
+        isShared: true,
+        collegeName: user.collegeName,
+        department: user.department
+      });
+
+      if (sharedAssignments.length > 0) {
+        for (const ass of sharedAssignments) {
+          const exists = personalAssignments.some(a => a.sharedAssignmentId === ass.id);
+          if (!exists) {
+            const newAss = await db.insert('assignments', {
+              userId: req.user.id,
+              title: ass.title,
+              subject: ass.subject || 'General',
+              dueDate: ass.dueDate,
+              status: 'Pending',
+              priority: ass.priority || 'Medium',
+              description: ass.description || '',
+              sharedAssignmentId: ass.id,
+              assignedBy: ass.authorName || 'Faculty'
+            });
+            personalAssignments.push(newAss);
+          }
+        }
+      }
+    }
+
+    res.json(personalAssignments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post('/api/assignments', authenticateToken, async (req, res) => {
@@ -401,6 +469,9 @@ app.get('/api/attendance', authenticateToken, async (req, res) => {
 });
 
 app.post('/api/attendance', authenticateToken, async (req, res) => {
+  if (req.user.role === 'student') {
+    return res.status(403).json({ error: 'Access denied. Students cannot modify attendance records.' });
+  }
   const { subject, attended, total, target } = req.body;
   if (!subject) return res.status(400).json({ error: 'Subject required' });
   
@@ -416,6 +487,9 @@ app.post('/api/attendance', authenticateToken, async (req, res) => {
 });
 
 app.put('/api/attendance/:id', authenticateToken, async (req, res) => {
+  if (req.user.role === 'student') {
+    return res.status(403).json({ error: 'Access denied. Students cannot modify attendance records.' });
+  }
   const { subject, attended, total, target } = req.body;
   const updated = await db.update('attendance', { id: req.params.id, userId: req.user.id }, {
     subject,
@@ -428,6 +502,9 @@ app.put('/api/attendance/:id', authenticateToken, async (req, res) => {
 });
 
 app.post('/api/attendance/:id/log', authenticateToken, async (req, res) => {
+  if (req.user.role === 'student') {
+    return res.status(403).json({ error: 'Access denied. Students cannot modify attendance records.' });
+  }
   const { status } = req.body; // 'present' or 'absent'
   if (status !== 'present' && status !== 'absent') {
     return res.status(400).json({ error: 'Status must be present or absent' });
@@ -455,6 +532,9 @@ app.post('/api/attendance/:id/log', authenticateToken, async (req, res) => {
 });
 
 app.delete('/api/attendance/:id', authenticateToken, async (req, res) => {
+  if (req.user.role === 'student') {
+    return res.status(403).json({ error: 'Access denied. Students cannot modify attendance records.' });
+  }
   const deleted = await db.delete('attendance', { id: req.params.id, userId: req.user.id });
   if (deleted) res.json({ message: 'Attendance track deleted' });
   else res.status(404).json({ error: 'Not found' });
@@ -711,7 +791,14 @@ app.get('/api/faculty/students', authenticateToken, requireAdminOrFaculty, async
     if (req.user.role === 'admin') {
       students = await db.find('users', { role: 'student' });
     } else {
-      students = await db.find('users', { role: 'student', facultyId: req.user.id });
+      const faculty = await db.findOne('users', { id: req.user.id });
+      if (faculty) {
+        students = await db.find('users', { 
+          role: 'student', 
+          collegeName: faculty.collegeName,
+          department: faculty.department
+        });
+      }
     }
 
     const safeStudents = students.map(s => ({
@@ -720,6 +807,7 @@ app.get('/api/faculty/students', authenticateToken, requireAdminOrFaculty, async
       email: s.email,
       fullName: s.fullName,
       collegeName: s.collegeName,
+      department: s.department || '',
       isVerified: s.isVerified === undefined ? true : s.isVerified
     }));
     res.json(safeStudents);
@@ -733,8 +821,12 @@ app.get('/api/faculty/student-attendance/:studentId', authenticateToken, require
     const student = await db.findOne('users', { id: req.params.studentId });
     if (!student) return res.status(404).json({ error: 'Student not found.' });
     
-    if (req.user.role === 'faculty' && student.facultyId !== req.user.id) {
-      return res.status(403).json({ error: 'Access denied.' });
+    if (req.user.role === 'faculty') {
+      const faculty = await db.findOne('users', { id: req.user.id });
+      const sameDept = student.collegeName === faculty.collegeName && student.department === faculty.department;
+      if (student.facultyId !== req.user.id && !sameDept) {
+        return res.status(403).json({ error: 'Access denied.' });
+      }
     }
     
     const attendanceRecords = await db.find('attendance', { userId: req.params.studentId });
@@ -752,12 +844,231 @@ app.post('/api/faculty/verify-student', authenticateToken, requireAdminOrFaculty
     const student = await db.findOne('users', { id: studentId });
     if (!student) return res.status(404).json({ error: 'Student not found.' });
     
-    if (req.user.role === 'faculty' && student.facultyId !== req.user.id) {
-      return res.status(403).json({ error: 'Access denied.' });
+    if (req.user.role === 'faculty') {
+      const faculty = await db.findOne('users', { id: req.user.id });
+      const sameDept = student.collegeName === faculty.collegeName && student.department === faculty.department;
+      if (student.facultyId !== req.user.id && !sameDept) {
+        return res.status(403).json({ error: 'Access denied.' });
+      }
     }
     
     await db.update('users', { id: studentId }, { isVerified: true });
     res.json({ message: 'Student account verified successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Faculty Publish Note
+app.post('/api/faculty/publish-note', authenticateToken, requireAdminOrFaculty, async (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content required.' });
+    }
+
+    const faculty = await db.findOne('users', { id: req.user.id });
+    if (!faculty) return res.status(404).json({ error: 'Faculty not found.' });
+
+    const entry = await db.insert('notes', {
+      userId: req.user.id,
+      title,
+      content,
+      category: category || 'General',
+      isShared: true,
+      collegeName: faculty.collegeName,
+      department: faculty.department,
+      authorName: faculty.fullName || faculty.username
+    });
+
+    res.status(201).json(entry);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Faculty Publish Assignment
+app.post('/api/faculty/publish-assignment', authenticateToken, requireAdminOrFaculty, async (req, res) => {
+  try {
+    const { title, subject, dueDate, priority, description } = req.body;
+    if (!title || !dueDate || !subject) {
+      return res.status(400).json({ error: 'Title, subject and due date required.' });
+    }
+
+    const faculty = await db.findOne('users', { id: req.user.id });
+    if (!faculty) return res.status(404).json({ error: 'Faculty not found.' });
+
+    const entry = await db.insert('assignments', {
+      userId: req.user.id,
+      title,
+      subject,
+      dueDate,
+      status: 'Pending',
+      priority: priority || 'Medium',
+      description: description || '',
+      isShared: true,
+      collegeName: faculty.collegeName,
+      department: faculty.department,
+      authorName: faculty.fullName || faculty.username
+    });
+
+    res.status(201).json(entry);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Faculty Mark Student Attendance
+app.post('/api/faculty/mark-attendance', authenticateToken, requireAdminOrFaculty, async (req, res) => {
+  try {
+    const { studentId, subject, status, date } = req.body;
+    if (!studentId || !subject || !status || !date) {
+      return res.status(400).json({ error: 'Student ID, subject, status, and date are required.' });
+    }
+
+    const student = await db.findOne('users', { id: studentId });
+    if (!student) return res.status(404).json({ error: 'Student not found.' });
+
+    const faculty = await db.findOne('users', { id: req.user.id });
+    if (!faculty) return res.status(404).json({ error: 'Faculty not found.' });
+
+    // Verify advisor or department match
+    const sameDept = student.collegeName === faculty.collegeName && student.department === faculty.department;
+    if (req.user.role === 'faculty' && student.facultyId !== req.user.id && !sameDept) {
+      return res.status(403).json({ error: 'Access denied.' });
+    }
+
+    const record = await db.findOne('attendance', { userId: studentId, subject });
+    const dateString = date + 'T12:00:00.000Z'; // standard format
+
+    if (!record) {
+      const entry = await db.insert('attendance', {
+        userId: studentId,
+        subject,
+        attended: status === 'present' ? 1 : 0,
+        total: 1,
+        target: 75,
+        logs: [{ date: dateString, status, markedBy: faculty.fullName || faculty.username }]
+      });
+      return res.status(201).json(entry);
+    } else {
+      const logs = record.logs || [];
+      const dateOnly = date.substring(0, 10);
+      const alreadyLogged = logs.some(l => l.date.substring(0, 10) === dateOnly);
+
+      if (alreadyLogged) {
+        return res.status(400).json({ error: 'Attendance for this date and subject is already logged.' });
+      }
+
+      logs.push({
+        date: dateString,
+        status,
+        markedBy: faculty.fullName || faculty.username
+      });
+
+      const newAttended = status === 'present' ? record.attended + 1 : record.attended;
+      const newTotal = record.total + 1;
+
+      await db.update('attendance', { id: record.id }, {
+        attended: newAttended,
+        total: newTotal,
+        logs
+      });
+
+      res.json({ message: 'Attendance marked successfully', attended: newAttended, total: newTotal });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Faculty Mark Student Attendance (Bulk)
+app.post('/api/faculty/mark-attendance-bulk', authenticateToken, requireAdminOrFaculty, async (req, res) => {
+  try {
+    const { subject, date, records } = req.body;
+    if (!subject || !date || !records || !Array.isArray(records)) {
+      return res.status(400).json({ error: 'Subject, date, and student records array are required.' });
+    }
+
+    const faculty = await db.findOne('users', { id: req.user.id });
+    if (!faculty) return res.status(404).json({ error: 'Faculty not found.' });
+
+    const results = [];
+    const dateString = date + 'T12:00:00.000Z'; // standard format
+    const dateOnly = date.substring(0, 10);
+
+    for (const recordItem of records) {
+      const { studentId, status } = recordItem;
+      if (!studentId || !status) continue;
+
+      const student = await db.findOne('users', { id: studentId });
+      if (!student) continue;
+
+      // Verify advisor or department match
+      const sameDept = student.collegeName === faculty.collegeName && student.department === faculty.department;
+      if (req.user.role === 'faculty' && student.facultyId !== req.user.id && !sameDept) {
+        continue; // Skip unauthorized students
+      }
+
+      const record = await db.findOne('attendance', { userId: studentId, subject });
+
+      if (!record) {
+        const entry = await db.insert('attendance', {
+          userId: studentId,
+          subject,
+          attended: status === 'present' ? 1 : 0,
+          total: 1,
+          target: 75,
+          logs: [{ date: dateString, status, markedBy: faculty.fullName || faculty.username }]
+        });
+        results.push({ studentId, subject, status, action: 'inserted' });
+      } else {
+        const logs = record.logs || [];
+        const todayLogIndex = logs.findIndex(l => l.date.substring(0, 10) === dateOnly);
+
+        if (todayLogIndex !== -1) {
+          // If already logged on this day, update the status
+          const oldStatus = logs[todayLogIndex].status;
+          if (oldStatus !== status) {
+            logs[todayLogIndex].status = status;
+            logs[todayLogIndex].markedBy = faculty.fullName || faculty.username;
+            
+            let newAttended = record.attended;
+            if (oldStatus === 'present' && status === 'absent') {
+              newAttended = Math.max(0, record.attended - 1);
+            } else if (oldStatus === 'absent' && status === 'present') {
+              newAttended = record.attended + 1;
+            }
+
+            await db.update('attendance', { id: record.id }, {
+              attended: newAttended,
+              logs
+            });
+            results.push({ studentId, subject, status, action: 'updated_status' });
+          } else {
+            results.push({ studentId, subject, status, action: 'no_change' });
+          }
+        } else {
+          // Append a new log entry for today
+          logs.push({
+            date: dateString,
+            status,
+            markedBy: faculty.fullName || faculty.username
+          });
+          const newAttended = status === 'present' ? record.attended + 1 : record.attended;
+          const newTotal = record.total + 1;
+
+          await db.update('attendance', { id: record.id }, {
+            attended: newAttended,
+            total: newTotal,
+            logs
+          });
+          results.push({ studentId, subject, status, action: 'appended' });
+        }
+      }
+    }
+
+    res.json({ message: 'Bulk attendance marked successfully', results });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

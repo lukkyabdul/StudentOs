@@ -10,5 +10,35 @@
     "status": "Pending",
     "priority": "High",
     "description": ""
+  },
+  {
+    "id": "o89a67f5hmrdbv4ee",
+    "createdAt": "2026-07-09T09:52:01.286Z",
+    "updatedAt": "2026-07-09T09:52:01.286Z",
+    "userId": "xx1lgg1q8mrdb0ni0",
+    "title": "CPU Scheduling Lab",
+    "subject": "Operating Systems",
+    "dueDate": "2026-07-16",
+    "status": "Pending",
+    "priority": "High",
+    "description": "Implement FIFO, SJF, and Round Robin scheduling algorithms.",
+    "isShared": true,
+    "collegeName": "Antigravity Academy",
+    "department": "Computer Science",
+    "authorName": "Test Faculty CS"
+  },
+  {
+    "id": "ex23gifp3mrepwx0t",
+    "createdAt": "2026-07-10T09:13:05.837Z",
+    "updatedAt": "2026-07-10T09:13:05.837Z",
+    "userId": "s4dkrcfklmreptk5m",
+    "title": "CPU Scheduling Lab",
+    "subject": "Operating Systems",
+    "dueDate": "2026-07-16",
+    "status": "Pending",
+    "priority": "High",
+    "description": "Implement FIFO, SJF, and Round Robin scheduling algorithms.",
+    "sharedAssignmentId": "o89a67f5hmrdbv4ee",
+    "assignedBy": "Test Faculty CS"
   }
 ]

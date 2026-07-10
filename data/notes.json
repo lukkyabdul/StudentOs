@@ -7,5 +7,29 @@
     "title": "New Note",
     "content": "",
     "category": "General"
+  },
+  {
+    "id": "p21onl7z8mrdbkhys",
+    "createdAt": "2026-07-09T09:43:45.652Z",
+    "updatedAt": "2026-07-09T09:43:45.652Z",
+    "userId": "xx1lgg1q8mrdb0ni0",
+    "title": "Operating System Concepts",
+    "content": "Learn scheduling, processes, memory management.",
+    "category": "Operating Systems",
+    "isShared": true,
+    "collegeName": "Antigravity Academy",
+    "department": "Computer Science",
+    "authorName": "Test Faculty CS"
+  },
+  {
+    "id": "quc0dha7dmreqabdx",
+    "createdAt": "2026-07-10T09:23:30.981Z",
+    "updatedAt": "2026-07-10T09:23:30.981Z",
+    "userId": "s4dkrcfklmreptk5m",
+    "title": "Operating System Concepts",
+    "content": "Learn scheduling, processes, memory management.",
+    "category": "Operating Systems",
+    "sharedNoteId": "p21onl7z8mrdbkhys",
+    "assignedBy": "Test Faculty CS"
   }
 ]
